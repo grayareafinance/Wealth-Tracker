@@ -1,4 +1,4 @@
-const CACHE_NAME = "grayarea-wealth-tracker-v1";
+const CACHE_NAME = "grayarea-wealth-tracker-v2";
 
 const APP_FILES = [
   "./",
