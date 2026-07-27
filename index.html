@@ -17,6 +17,45 @@
 <title>GrayArea Finance — Wealth Tracker</title>
   
 <style>
+  /* Final mobile header sizing */
+@media (max-width: 700px) {
+  .aheader {
+    gap: 14px !important;
+    padding-bottom: 18px !important;
+  }
+
+  .lms {
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+  }
+
+  .lms img {
+    width: 54px !important;
+    height: 54px !important;
+    object-fit: cover;
+  }
+
+  .atitle {
+    font-size: 18px !important;
+    line-height: 1.15;
+  }
+
+  .asub {
+    font-size: 12px !important;
+    margin-top: 4px;
+  }
+
+  .ab {
+    font-size: 13px !important;
+    padding: 7px 13px !important;
+  }
+
+  .ibtn {
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+  }
+}
     @media(max-width:700px){
   html {
   min-height: 100%;
@@ -431,9 +470,6 @@ table select:focus{outline:none;border-color:var(--accent)}
 
 }
 
-/* Emergency iPhone open fix: skip cover/setup and show app immediately */
-#cover,#setup{display:none!important}
-#app{display:block!important}
       /* Final iPhone layout fix */
 @media (max-width: 700px) {
   #app {
@@ -1024,17 +1060,25 @@ function copyShareLink(){
 
 // SETUP
 
-function forceOpenBudget(){
-  try{var c=document.getElementById('cover');if(c)c.style.display='none';}catch(e){}
-  try{var s=document.getElementById('setup');if(s)s.style.display='none';}catch(e){}
-  try{var a=document.getElementById('app');if(a)a.style.display='block';}catch(e){}
-  try{if(!hydrate())dd();ensureOpenData();persist();startApp();}catch(e){try{startApp();}catch(_e){}}
+function showSetup() {
+  const cover = document.getElementById("cover");
+  const setup = document.getElementById("setup");
+  const app = document.getElementById("app");
+
+  if (cover) cover.style.display = "none";
+  if (app) app.style.display = "none";
+  if (setup) setup.style.display = "flex";
+
+  goStep(0);
 }
-function showSetupOrApp(){
-  try{document.getElementById('cover').style.display='none';}catch(e){}
-  try{if(!hydrate())dd();}catch(e){try{dd();}catch(_e){}}
-  try{ensureOpenData();persist();}catch(e){}
-  startApp();
+
+function forceOpenBudget() {
+  showSetup();
+}
+
+function showSetupOrApp() {
+  showSetup();
+}
 }
 function goStep(n){
   [0,1,2].forEach(i=>{
@@ -1057,6 +1101,7 @@ function launch(){
   S.income[0].a=parseFloat(document.getElementById('ip1').value)||0;
   S.income[1].a=parseFloat(document.getElementById('ip2').value)||0;
   S.income[2].a=parseFloat(document.getElementById('ioth').value)||0;
+  C.setupComplete = true;
   persist();
   document.getElementById('setup').style.display='none';
   startApp();
@@ -2848,33 +2893,64 @@ window.addEventListener('beforeunload',()=>{
   try{flushBudgetToS();saveBudgetMonth();}catch(e){}
 });
 
-// On page load: open the tracker directly. This avoids iPhone/Safari getting stuck on the cover/setup flow.
-(function(){
-  try{
+// On first use or after reset: show setup.
+// On later visits: open the saved tracker.
+(function () {
+  try {
     setupPWA();
-    if(consumeResetFlag()){
-      window.__GAF_RESETTING__=true;
+
+    if (consumeResetFlag()) {
+      window.__GAF_RESETTING__ = true;
       clearAllStoredData(false);
       rebuildBlankData();
-      window.__GAF_RESETTING__=false;
-      persist(true);
+      window.__GAF_RESETTING__ = false;
+
+      showSetup();
+      return;
+    }
+
+    if (importFromShareHash()) {
+      ensureOpenData();
       startApp();
       return;
     }
-    if(importFromShareHash()){ensureOpenData();startApp();return;}
-    if(!hydrate())dd();
-    setupPWA();
-    ensureOpenData();
-    persist();
-    startApp();
-  }catch(e){
-    console.error('Initial load failed',e);
-    try{dd();ensureOpenData();startApp();}
-    catch(_e){
-      const cover=document.getElementById('cover');
-      const app=document.getElementById('app');
-      if(cover)cover.style.display='none';
-      if(app){app.style.display='block';app.innerHTML='<div class="alert-banner warn-b">The tracker could not fully load. Please use the reset option or download a fresh copy.</div>';}
+
+    const hasSavedData = hydrate();
+
+    // Supports existing versions that did not have setupComplete.
+    const setupFinished =
+      C.setupComplete === true ||
+      (C.p1 && C.p1 !== "Person 1") ||
+      (C.p2 && C.p2 !== "Person 2") ||
+      (S.income || []).some(row => Number(row.a) > 0);
+
+    if (hasSavedData && setupFinished) {
+      ensureOpenData();
+      startApp();
+    } else {
+      if (!hasSavedData) {
+        dd();
+      }
+
+      showSetup();
+    }
+  } catch (error) {
+    console.error("Initial load failed", error);
+
+    try {
+      dd();
+      showSetup();
+    } catch (setupError) {
+      const app = document.getElementById("app");
+
+      if (app) {
+        app.style.display = "block";
+        app.innerHTML =
+          '<div class="alert-banner warn-b">' +
+          "The tracker could not fully load. Please refresh and try again." +
+          "</div>" +
+          app.innerHTML;
+      }
     }
   }
 })();
