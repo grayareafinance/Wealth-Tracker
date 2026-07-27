@@ -15,6 +15,61 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1a1a1a">
 <title>GrayArea Finance — Wealth Tracker</title>
+  @media(max-width:700px){
+  /* existing mobile CSS */
+}
+
+/* PASTE STEP 9 HERE */
+
+html {
+  min-height: 100%;
+  background: #1a1a1a;
+}
+
+body {
+  min-height: 100%;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+.ibtn,
+.nb,
+.ab,
+.addbtn {
+  touch-action: manipulation;
+}
+
+@media (display-mode: standalone) {
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  input,
+  textarea {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+}
+
+/* Emergency iPhone open fix: skip cover/setup and show app immediately */
+#cover,#setup{display:none!important}
+#app{display:block!important}
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
