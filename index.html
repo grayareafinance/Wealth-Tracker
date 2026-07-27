@@ -8,7 +8,7 @@
 <meta name="application-name" content="GrayArea Finance">
 <meta name="apple-mobile-web-app-title" content="GrayArea">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 <meta name="theme-color" content="#1a1a1a">
 <meta charset="UTF-8">
@@ -434,6 +434,52 @@ table select:focus{outline:none;border-color:var(--accent)}
 /* Emergency iPhone open fix: skip cover/setup and show app immediately */
 #cover,#setup{display:none!important}
 #app{display:block!important}
+      /* Final iPhone layout fix */
+@media (max-width: 700px) {
+  #app {
+    padding-top: calc(env(safe-area-inset-top) + 14px) !important;
+    padding-right: 16px !important;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
+    padding-left: 16px !important;
+  }
+
+  body {
+    font-size: 13px;
+  }
+
+  .aheader {
+    padding-top: 0;
+    gap: 12px;
+  }
+
+  .lms {
+    width: 44px;
+    height: 44px;
+  }
+
+  .atitle {
+    font-size: 16px;
+  }
+
+  .asub {
+    font-size: 11px;
+  }
+
+  .ab {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .ibtn {
+    font-size: 12px;
+    padding: 7px 11px;
+  }
+
+  .nb {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+}
 </style>
 </head>
 <body>
