@@ -534,7 +534,7 @@ table select:focus{outline:none;border-color:var(--accent)}
       <div class="cf"><div class="cf-icon">📊</div><div class="cf-title">Net worth</div><div class="cf-sub">Assets minus liabilities, updated live</div></div>
       <div class="cf"><div class="cf-icon">📈</div><div class="cf-title">Monthly tracker</div><div class="cf-sub">Month-on-month comparisons with budget targets</div></div>
     </div>
-    <button class="cover-btn" onclick="forceOpenBudget()">Open my budget →</button>
+    <button class="cover-btn" onclick="document.getElementById('cover').style.display='none';document.getElementById('app').style.display='none';document.getElementById('setup').style.display='flex';">Open my budget →</button>
     <div class="cover-version">GrayArea Finance v2.1 · Opens directly · Works offline</div>
   </div>
 </div>
